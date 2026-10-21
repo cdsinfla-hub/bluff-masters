@@ -21,7 +21,7 @@ async function setup(t, options) {
 test('2-player full game: privacy, permissions, self-votes, scoring, reset, HTTP', async t => {
   const { game, url, client } = await setup(t);
   assert.equal((await (await fetch(url + '/health')).json()).status, 'ok');
-  assert.equal((await (await fetch(url + '/health')).json()).questionCount,2030);
+  assert.equal((await (await fetch(url + '/health')).json()).questionCount,2060);
   assert.match(await (await fetch(url)).text(), /BLUFF MASTERS/);
   const a = await client('Host'); const b = await client('Guest', a.session.code);
   assert.ok((await b.ask('start', { rounds:3 })).error);
@@ -79,7 +79,7 @@ test('host category settings sync, survive host transfer, and constrain the game
   const a=await client('Host'); const b=await client('Guest',a.session.code);
   await client('Third player',a.session.code);
   assert.deepEqual(a.latest.categories,['potluck']);
-  assert.equal(a.latest.categoryChoices.length,10);
+  assert.equal(a.latest.categoryChoices.length,11);
   assert.equal(a.latest.categoryChoices.at(-1).id,'potluck');
   assert.ok((await b.ask('configure',{categories:['music']})).error);
   for (const categories of [[],['missing'],['music','potluck'],null,'music']) {

@@ -26328,5 +26328,395 @@
     "difficulty": "unrated",
     "source": "Bluff Masters",
     "sourceCategory": "Original category expansion"
+  },
+  {
+    "prompt": "A wombat leaves behind an unusually geometric souvenir: its poop is shaped like _____.",
+    "answer": "Cubes",
+    "decoys": [
+      "Pyramids",
+      "Spirals",
+      "Stars"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nationalgeographic.com/animals/article/wombat-poop-cube-why-is-it-square-shaped"
+  },
+  {
+    "prompt": "When threatened, some sea cucumbers defend themselves by ejecting their _____.",
+    "answer": "Internal organs",
+    "decoys": [
+      "Eyeballs",
+      "Teeth",
+      "Eggs"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nhm.ac.uk/discover/what-is-a-sea-cucumber.html"
+  },
+  {
+    "prompt": "A pearlfish can find shelter in a sea cucumber by entering through its _____.",
+    "answer": "Anus",
+    "decoys": [
+      "Mouth",
+      "Nostril",
+      "Feeding tentacle"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nhm.ac.uk/discover/what-is-a-sea-cucumber.html"
+  },
+  {
+    "prompt": "Blue sea cucumbers guard their rear opening with structures nicknamed anal _____.",
+    "answer": "Teeth",
+    "decoys": [
+      "Whiskers",
+      "Wings",
+      "Horns"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nhm.ac.uk/discover/what-is-a-sea-cucumber.html"
+  },
+  {
+    "prompt": "The swimming sea cucumber Enypniastes eximia has the horror-movie nickname headless _____ monster.",
+    "answer": "Chicken",
+    "decoys": [
+      "Hamster",
+      "Pigeon",
+      "Lizard"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nhm.ac.uk/discover/what-is-a-sea-cucumber.html"
+  },
+  {
+    "prompt": "A sea urchin has elaborate mouthparts named Aristotle's _____.",
+    "answer": "Lantern",
+    "decoys": [
+      "Teapot",
+      "Umbrella",
+      "Accordion"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nhm.ac.uk/discover/sea-urchins-strange-and-spiny-wonders-of-the-ocean.html"
+  },
+  {
+    "prompt": "The word urchin originally referred to a land animal: the _____.",
+    "answer": "Hedgehog",
+    "decoys": [
+      "Porcupine",
+      "Armadillo",
+      "Mole"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nhm.ac.uk/discover/sea-urchins-strange-and-spiny-wonders-of-the-ocean.html"
+  },
+  {
+    "prompt": "On Venus, one full rotation takes longer than an entire _____.",
+    "answer": "Year",
+    "decoys": [
+      "Century",
+      "Millennium",
+      "Decade"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://science.nasa.gov/venus/venus-facts/"
+  },
+  {
+    "prompt": "On Venus, the Sun rises in the _____, reversing our usual Earthly routine.",
+    "answer": "West",
+    "decoys": [
+      "North",
+      "South",
+      "Northeast"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://science.nasa.gov/venus/venus-facts/"
+  },
+  {
+    "prompt": "Sunsets on Mars can give the sky near the Sun a surprising _____ tint.",
+    "answer": "Blue",
+    "decoys": [
+      "Green",
+      "Purple",
+      "Pink"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://spaceplace.nasa.gov/blue-sky/en/martian-sky-sunset.en.jpg/"
+  },
+  {
+    "prompt": "NASA found that glowing night clouds can grow around tiny particles of _____ smoke.",
+    "answer": "Meteor",
+    "decoys": [
+      "Volcano",
+      "Wildfire",
+      "Rocket"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nasa.gov/missions/aim/meteor-smoke-makes-strange-clouds/"
+  },
+  {
+    "prompt": "Astronaut sandwiches often trade sliced bread for _____ to avoid floating crumbs.",
+    "answer": "Tortillas",
+    "decoys": [
+      "Rice cakes",
+      "Waffles",
+      "Crackers"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.nasa.gov/history/space-station-20th-food-on-iss/"
+  },
+  {
+    "prompt": "The Coolidges spared a Thanksgiving dinner gift and made it a pet: a _____.",
+    "answer": "Raccoon",
+    "decoys": [
+      "Porcupine",
+      "Skunk",
+      "Badger"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://firstladies.si.edu/portrait/grace-coolidge"
+  },
+  {
+    "prompt": "In 1919, Boston streets were hit by a deadly flood of _____.",
+    "answer": "Molasses",
+    "decoys": [
+      "Mustard",
+      "Milk",
+      "Maple syrup"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.smithsonianmag.com/smart-news/why-boston-molasses-disaster-was-so-deadly-180961209/"
+  },
+  {
+    "prompt": "At Cooper's Hill in England, racers tumble downhill in pursuit of a wheel of _____.",
+    "answer": "Cheese",
+    "decoys": [
+      "Bread",
+      "Chocolate",
+      "Butter"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.guinnessworldrecords.com/world-records/755460-longest-running-cheese-rolling-race"
+  },
+  {
+    "prompt": "Alan Nash won world championships by wrestling opponents with his _____.",
+    "answer": "Toes",
+    "decoys": [
+      "Eyebrows",
+      "Elbows",
+      "Ears"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.guinnessworldrecords.com/world-records/77847-most-toe-wrestling-world-championships-won-men"
+  },
+  {
+    "prompt": "A real world wrestling championship in Lancashire has competitors grapple in _____.",
+    "answer": "Gravy",
+    "decoys": [
+      "Custard",
+      "Porridge",
+      "Marmalade"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.guinnessworldrecords.com/news/2019/9/world-gravy-wrestling-championships-591178"
+  },
+  {
+    "prompt": "Maurizio Cattelan's artwork Comedian put a _____ on a gallery wall using duct tape.",
+    "answer": "Banana",
+    "decoys": [
+      "Cucumber",
+      "Carrot",
+      "Sausage"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.smithsonianmag.com/smart-news/banana-taped-to-a-wall-copyright-suit-180980409/"
+  },
+  {
+    "prompt": "In 1898, Faroppo Lorenzo spent nine days underground testing a safety _____.",
+    "answer": "Coffin",
+    "decoys": [
+      "Bathtub",
+      "Sleeping bag",
+      "Diving bell"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://www.guinnessworldrecords.com/news/2025/5/man-voluntarily-buries-himself-alive-emerges-nine-days-later-its-smelly-down-there"
+  },
+  {
+    "prompt": "B. F. Skinner investigated guiding missiles with live _____ inside.",
+    "answer": "Pigeons",
+    "decoys": [
+      "Hamsters",
+      "Goldfish",
+      "Bees"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "An Ig Nobel-winning physics study examined swimming by a trout that was _____.",
+    "answer": "Dead",
+    "decoys": [
+      "Blindfolded",
+      "Painted pink",
+      "Wearing a harness"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "A 2024 Ig Nobel-winning experiment separated sober and drunk _____.",
+    "answer": "Worms",
+    "decoys": [
+      "Snails",
+      "Crabs",
+      "Ants"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "A milk-ejection experiment startled a cat standing on a _____ by popping a paper bag.",
+    "answer": "Cow",
+    "decoys": [
+      "Horse",
+      "Pig",
+      "Sheep"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "Ig Nobel-winning fieldwork in Togo studied rainbow lizards eating _____.",
+    "answer": "Pizza",
+    "decoys": [
+      "Popcorn",
+      "Ice cream",
+      "French fries"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "Researchers painted cows to resemble _____ in an experiment on biting flies.",
+    "answer": "Zebras",
+    "decoys": [
+      "Tigers",
+      "Leopards",
+      "Giraffes"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "Physician William Bean tracked the growth of one _____ for 35 years.",
+    "answer": "Fingernail",
+    "decoys": [
+      "Eyebrow",
+      "Tooth",
+      "Eyelash"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "An Ig Nobel-winning design study explored how smelly shoes affect a _____.",
+    "answer": "Shoe rack",
+    "decoys": [
+      "Refrigerator",
+      "Washing machine",
+      "Airplane seat"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "An Ig Nobel-winning study examined nursing babies after their mothers ate _____.",
+    "answer": "Garlic",
+    "decoys": [
+      "Chili peppers",
+      "Chocolate",
+      "Licorice"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "Researchers turned dead _____ into mechanical grippers in work honored in 2023.",
+    "answer": "Spiders",
+    "decoys": [
+      "Crabs",
+      "Beetles",
+      "Scorpions"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
+  },
+  {
+    "prompt": "Geologist Jan Zalasiewicz won an Ig Nobel for explaining why scientists lick _____.",
+    "answer": "Rocks",
+    "decoys": [
+      "Tree bark",
+      "Seaweed",
+      "Ice cores"
+    ],
+    "category": "weird-wacky",
+    "source": "Bluff Masters",
+    "sourceCategory": "Original researched oddities",
+    "sourceUrl": "https://improbable.com/ig/winners/"
   }
 ]

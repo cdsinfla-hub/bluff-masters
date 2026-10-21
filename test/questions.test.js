@@ -5,10 +5,10 @@ const bank = require('../questions.json');
 const catalog = require('../categories.json');
 const normalize = value => value.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 
-test('expanded bank contains 2,000 attributed additions and the original 30', () => {
-  assert.equal(bank.length, 2030);
+test('expanded bank contains 2,000 attributed additions plus 30 researched oddities and the original 30', () => {
+  assert.equal(bank.length, 2060);
   assert.equal(bank.slice(0,30).filter(q => !q.source).length,30);
-  assert.equal(bank.slice(30).filter(q => ['Open Trivia Database','OpenTriviaQA','Bluff Masters'].includes(q.source)).length,2000);
+  assert.equal(bank.slice(30).filter(q => ['Open Trivia Database','OpenTriviaQA','Bluff Masters'].includes(q.source)).length,2030);
   const ids = new Set(catalog.filter(c => c.id !== 'potluck').map(c => c.id));
   const prompts = new Set();
   for (const q of bank) {
@@ -29,11 +29,13 @@ test('expanded bank contains 2,000 attributed additions and the original 30', ()
   }
 });
 
-test('all nine topics have substantial question pools; Potluck comes last', () => {
+test('the original nine topics retain their pools and Weird & Wacky has cited facts; Potluck comes last', () => {
   const added=bank.slice(30);
-  assert.equal(catalog.length,10);
+  assert.equal(catalog.length,11);
   assert.equal(catalog.at(-1).id,'potluck');
-  assert.equal(new Set(added.map(q => q.category)).size,9);
-  for (const c of catalog.filter(c => c.id !== 'potluck')) assert.ok(bank.filter(q => q.category === c.id).length>=200, c.label);
+  assert.equal(new Set(added.map(q => q.category)).size,10);
+  for (const c of catalog.filter(c => c.id !== 'potluck')) assert.ok(bank.filter(q => q.category === c.id).length >= (c.id === 'weird-wacky' ? 30 : 200), c.label);
   assert.ok(added.filter(q => ['medium','hard'].includes(q.difficulty)).length>=750);
 });
+
+test('new oddities are original fill-in-the-blank questions with research links',()=>{const rows=bank.filter(q=>q.category==='weird-wacky');assert.equal(rows.length,30);for(const q of rows){assert.ok(q.prompt.includes('_____'));assert.match(q.sourceUrl,/^https:\/\//);assert.equal(q.source,'Bluff Masters');}});

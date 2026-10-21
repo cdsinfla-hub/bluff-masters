@@ -1,12 +1,57 @@
 [
-  {"id":"animals-nature","label":"Animals & Nature","description":"Wildlife, plants, oceans and the natural world"},
-  {"id":"science-tech","label":"Science & Technology","description":"Space, inventions, the human body and technology"},
-  {"id":"history-myth","label":"History & Mythology","description":"Past events, ancient worlds, legends and folklore"},
-  {"id":"world-geography","label":"World & Geography","description":"Places, landmarks, countries and cultures"},
-  {"id":"movies-tv","label":"Movies & TV","description":"Big screens, small screens and behind-the-scenes trivia"},
-  {"id":"music","label":"Music","description":"Artists, instruments, albums and musical surprises"},
-  {"id":"books-arts","label":"Books & Arts","description":"Stories, art, language and curious words"},
-  {"id":"games-sports","label":"Games & Sports","description":"Video games, board games, athletes and sporting moments"},
-  {"id":"food-everyday","label":"Food & Everyday Life","description":"Food, drinks, everyday objects and offbeat facts"},
-  {"id":"potluck","label":"Potluck","description":"Surprise us with an even mix of all nine topics"}
+  {
+    "id": "animals-nature",
+    "label": "Animals & Nature",
+    "description": "Wildlife, plants, oceans and the natural world"
+  },
+  {
+    "id": "science-tech",
+    "label": "Science & Technology",
+    "description": "Space, inventions, the human body and technology"
+  },
+  {
+    "id": "history-myth",
+    "label": "History & Mythology",
+    "description": "Past events, ancient worlds, legends and folklore"
+  },
+  {
+    "id": "world-geography",
+    "label": "World & Geography",
+    "description": "Places, landmarks, countries and cultures"
+  },
+  {
+    "id": "movies-tv",
+    "label": "Movies & TV",
+    "description": "Big screens, small screens and behind-the-scenes trivia"
+  },
+  {
+    "id": "music",
+    "label": "Music",
+    "description": "Artists, instruments, albums and musical surprises"
+  },
+  {
+    "id": "books-arts",
+    "label": "Books & Arts",
+    "description": "Stories, art, language and curious words"
+  },
+  {
+    "id": "games-sports",
+    "label": "Games & Sports",
+    "description": "Video games, board games, athletes and sporting moments"
+  },
+  {
+    "id": "food-everyday",
+    "label": "Food & Everyday Life",
+    "description": "Food, drinks, everyday objects and offbeat facts"
+  },
+  {
+    "id": "weird-wacky",
+    "label": "Weird & Wacky",
+    "description": "Strange true stories, oddball science and wonderfully unlikely facts"
+  },
+  {
+    "id": "potluck",
+    "label": "Potluck",
+    "description": "About 75% Weird & Wacky, with other topics mixed in"
+  }
 ]

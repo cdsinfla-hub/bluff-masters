@@ -1,6 +1,6 @@
 # Question sources and attribution
 
-The question bank contains **2,030 questions**. All 1,030 previous prompts, answers, and decoys are preserved; every entry now has one playable category. The latest expansion added exactly 1,000 questions: 547 adapted from Open Trivia Database, 424 adapted from OpenTriviaQA, and 29 newly worded Bluff Masters questions. Across the complete bank, there are 1,547 Open Trivia Database entries, 424 OpenTriviaQA entries, 29 new Bluff Masters entries, and the original 30.
+The question bank contains **2,060 questions**. The bank now includes 30 newly researched Weird & Wacky questions, with the prior 2,030 entries retained. In the earlier expansion, all 1,030 previous prompts, answers, and decoys are preserved; every entry now has one playable category. The latest expansion added exactly 1,000 questions: 547 adapted from Open Trivia Database, 424 adapted from OpenTriviaQA, and 29 newly worded Bluff Masters questions. Across the complete bank, there are 1,547 Open Trivia Database entries, 424 OpenTriviaQA entries, 59 newly worded Bluff Masters entries, and the original 30.
 
 ## Expansion
 
@@ -24,8 +24,12 @@ The game bundles the selected data locally. Gameplay does not contact the upstre
 
 ## Newly worded category questions
 
-The 29 entries carrying `"source": "Bluff Masters"` were written for the category expansion, principally to strengthen Animals & Nature and World & Geography. Their wording is also offered under CC BY-SA 4.0. This does not change the status of the original 30 questions or grant a license for unrelated application code. Category labels and source metadata are editorial assignments, not claims by the upstream creators.
+The earlier 29 entries carrying `"source": "Bluff Masters"` were written for the category expansion, principally to strengthen Animals & Nature and World & Geography. Their wording is also offered under CC BY-SA 4.0. This does not change the status of the original 30 questions or grant a license for unrelated application code. Category labels and source metadata are editorial assignments, not claims by the upstream creators.
 
 ## Distribution
 
 The public game links to `/credits.html` for attribution without showing answers. When redistributing the imported questions or adaptations, preserve attribution and the CC BY-SA 4.0 license notice.
+
+## Weird & Wacky expansion
+
+Thirty original fill-in-the-blank questions were added to the retained 2,030-entry bank. These new question texts and original decoys are offered under CC BY-SA 4.0; factual research links are recorded in each entry's `sourceUrl`. Source publishers retain all rights in their articles; these are newly written questions about facts, not copied trivia prompts. No endorsement is implied. Research includes the Natural History Museum, NASA, Smithsonian, National Geographic, Guinness World Records and the official Ig Nobel winners archive. Potluck draws approximately 75% from this new category; this is a gameplay weighting, not a claim about the raw bank's composition.

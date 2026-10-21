@@ -1,6 +1,6 @@
 # Bluff Masters
 
-An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **2,030 bundled questions** and house decoys. All 1,030 existing questions were retained and categorized, and 1,000 more were added with priority given to the smallest topic pools. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
+An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **2,060 bundled questions** and house decoys. All 1,030 existing questions were retained and categorized, and 1,000 more were added with priority given to the smallest topic pools. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
 
 ## Play
 
@@ -15,7 +15,7 @@ The host can close submissions/voting early, remove players, or reset everyone t
 
 ## Categories
 
-In the lobby, the host can select any combination of the nine topics. **Potluck** is the last option and mixes all nine; selecting it clears individual selections, and selecting a topic clears Potluck. At least one choice is required. Everyone sees the chosen settings, and each round displays its topic. Settings are preserved when returning to the lobby and can be changed before the next game.
+In the lobby, the host can select any combination of ten categories. **Potluck** is the last option and uses about 75% Weird & Wacky; selecting it clears individual selections, and selecting a topic clears Potluck. At least one choice is required. Everyone sees the chosen settings, and each round displays its topic. Settings are preserved when returning to the lobby and can be changed before the next game.
 
 | Topic | Questions |
 | --- | ---: |
@@ -28,9 +28,10 @@ In the lobby, the host can select any combination of the nine topics. **Potluck*
 | Books & Arts | 228 |
 | Games & Sports | 228 |
 | Food & Everyday Life | 220 |
-| **Potluck — all topics** | **2,030** |
+| Weird & Wacky | 30 |
+| **Potluck — all topics** | **2,060** |
 
-The server draws evenly across selected topics, shuffling the topic order each cycle and the questions within each topic. A game never repeats a question. If there are fewer rounds than topics, a random subset of topics appears; the category counts in a game differ by at most one. Each question has one playable category ID; its original source category is retained as `sourceCategory` metadata. `categories.json` defines the labels and order. New questions must use one of its nine topic IDs, never `potluck`.
+Potluck targets 75% Weird & Wacky, rounded to 2 of 3, 4 of 5, or 8 of 10 questions. The same quota applies when Weird & Wacky is mixed with selected topics; the rest are distributed evenly across those selected topics. Choosing Weird & Wacky alone gives 100%. Excluding it respects the host's choices and balances only those topics. The completed deck is shuffled and never repeats a question within a game. All 2,030 previous entries are retained; 30 newly researched, originally worded oddities have per-question source URLs in the bank. This changes the proportion drawn during play, rather than claiming that 75% of all stored entries are oddities. `categories.json` defines the ten categories and keeps Potluck last.
 
 ## Run locally
 

@@ -21,10 +21,20 @@ function buildDeck(selection, rounds) {
   const buckets = new Map(ids.map(id => [id, shuffle(bank.filter(q => q.category === id))]));
   if ([...buckets.values()].reduce((n,items) => n + items.length, 0) < rounds) throw Error('Not enough questions in those categories for this game.');
   const deck = [];
+  // The quota applies only when Weird & Wacky is in the host's selection.
+  // Shuffle the completed deck so its position does not reveal the question type.
+  const otherIds = ids.filter(id => id !== 'weird-wacky');
+  if (ids.includes('weird-wacky') && otherIds.length) {
+    const quota = Math.round(rounds * 0.75);
+    const weird = buckets.get('weird-wacky');
+    if (weird.length < quota) throw Error('Not enough Weird & Wacky questions for this game.');
+    deck.push(...weird.splice(0, quota));
+    ids.splice(ids.indexOf('weird-wacky'), 1);
+  }
   while (deck.length < rounds) for (const id of shuffle(ids.filter(id => buckets.get(id).length))) {
     if (deck.length === rounds) break;
     deck.push(buckets.get(id).pop());
   }
-  return deck;
+  return shuffle(deck);
 }
 module.exports = { catalog, choices, validateCategories, buildDeck };
