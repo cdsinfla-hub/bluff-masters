@@ -1,0 +1,10 @@
+{
+  "name": "bluff-masters",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An original multiplayer trivia bluffing party game",
+  "engines": { "node": "22.x" },
+  "scripts": { "start": "node server.js", "test": "node --test" },
+  "dependencies": { "express": "^5.1.0", "socket.io": "^4.8.1" },
+  "devDependencies": { "socket.io-client": "^4.8.1" }
+}
