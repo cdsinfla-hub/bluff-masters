@@ -24,6 +24,9 @@ test('2-player full game: privacy, permissions, self-votes, scoring, reset, HTTP
   assert.equal((await (await fetch(url + '/health')).json()).questionCount,2391);
   assert.match(await (await fetch(url)).text(), /BLUFF MASTERS/);
   const a = await client('Host'); const b = await client('Guest', a.session.code);
+  const expired = await client('Expired guest', a.session.code, 'expired-token');
+  assert.match(expired.session.error, /saved seat has expired/);
+  assert.equal(game.rooms.get(a.session.code).players.length, 2);
   assert.ok((await b.ask('start', { rounds:3 })).error);
   await a.ask('start', { rounds:3 }); await pause(10);
   for (let round=1; round<=3; round++) {

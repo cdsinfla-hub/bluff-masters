@@ -121,6 +121,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000, notify = a
         if (p.connected) throw Error('This player is already connected in another tab.');
         clearTimeout(p.expiry); p.connected = true; p.socketId = socket.id;
       } else {
+        if (typeof data.token === 'string') throw Error('Your saved seat has expired. Join the room again.');
         if (r.phase !== 'lobby') throw Error('This game has started. Ask the host to return to the lobby.');
         if (r.players.length >= 8) throw Error('Room is full (8 players).');
         const name = typeof data.name === 'string' ? data.name.trim() : '';

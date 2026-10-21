@@ -3,14 +3,22 @@ const $ = id => document.getElementById(id);
 const socket = io();
 let state, saved;
 try { saved = JSON.parse(sessionStorage.getItem('bluff-session')); } catch {}
+if (!saved || typeof saved.code !== 'string' || typeof saved.token !== 'string') saved = null;
 function save(value) { saved = value; try { if (value) sessionStorage.setItem('bluff-session', JSON.stringify(value)); else sessionStorage.removeItem('bluff-session'); } catch {} }
 function notice(text) { $('notice').textContent = text; }
-function send(event, data = {}) { return new Promise(resolve => socket.timeout(10000).emit(event, data, (err, result) => { if (err) { notice('Connection interrupted. Please try again.'); resolve(null); } else if (result?.error) { notice(result.error); resolve(null); } else { notice(''); resolve(result); } })); }
-async function join(create = false, resume = false) {
+function send(event, data = {}, onError) { return new Promise(resolve => socket.timeout(10000).emit(event, data, (err, result) => { if (err) { notice('Connection interrupted. Please try again.'); resolve(null); } else if (result?.error) { if (!onError?.(result.error)) notice(result.error); resolve(null); } else { notice(''); resolve(result); } })); }
+async function join(create = false, resume = false, automatic = false) {
   if (!socket.connected) return notice('Waiting for a connection…');
   if (!resume && !$('name').reportValidity()) return;
   if (!create && !resume && !$('code').reportValidity()) return;
-  const result = await send('join', resume ? { code: saved.code, token: saved.token } : { create, code: $('code').value, name: $('name').value });
+  if (resume && !saved) return;
+  const result = await send('join', resume ? { code: saved.code, token: saved.token } : { create, code: $('code').value, name: $('name').value }, error => {
+    if (!resume || !['Room not found. Check the code.', 'Your saved seat has expired. Join the room again.'].includes(error)) return false;
+    const wasPlaying = !!state;
+    save(null); state = null; $('entry').hidden = false; $('game').hidden = true; $('rejoin').hidden = true;
+    notice(automatic && !wasPlaying ? '' : 'Your previous room or seat has expired. Create a room or join with a current code.');
+    return true;
+  });
   if (result) { save(result); $('lie').value = ''; }
 }
 const inviteCode = new URLSearchParams(location.search).get('room');
@@ -19,7 +27,7 @@ $('rejoin').hidden = !saved;
 $('join-form').onsubmit = e => { e.preventDefault(); join(); };
 $('create').onclick = () => join(true);
 $('rejoin').onclick = () => saved && join(false,true);
-socket.on('connect', () => { $('connection').textContent = '● Connected'; if (saved) join(false,true); });
+socket.on('connect', () => { $('connection').textContent = '● Connected'; if (saved) join(false,true,true); });
 socket.on('disconnect', () => { $('connection').textContent = '○ Reconnecting…'; notice('Connection lost. Reconnecting automatically; your seat is held for 90 seconds.'); });
 socket.on('connect_error', () => { $('connection').textContent = '○ Server unavailable'; notice('Trying to reach the server. A free host may need a minute to wake up.'); });
 socket.on('removed', () => { save(null); state = null; $('entry').hidden = false; $('game').hidden = true; $('rejoin').hidden = true; notice('The host removed you from the room.'); });
