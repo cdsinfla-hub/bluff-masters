@@ -92,5 +92,16 @@ socket.on('state', s => {
   }
   tick();
 });
-function tick() { $('timer').textContent = state?.deadline ? `${Math.max(0, Math.ceil((state.deadline - Date.now()) / 1000))}s remaining` : ''; }
-setInterval(tick, 500);
+function tick() {
+  const running = !!state?.deadline && ['lie', 'vote'].includes(state.phase);
+  $('timer').hidden = !running;
+  if (!running) return;
+  const remaining = Math.max(0, Math.min(60, (state.deadline - Date.now()) / 1000));
+  const seconds = Math.ceil(remaining);
+  $('timer-seconds').textContent = seconds;
+  $('timer-unit').textContent = seconds === 1 ? 'second' : 'seconds';
+  $('timer-ring').setAttribute('stroke-dashoffset', (276.46 * (1 - remaining / 60)).toFixed(2));
+  $('timer').classList.toggle('urgent', seconds <= 10);
+  $('timer').setAttribute('aria-label', `${seconds} ${seconds === 1 ? 'second' : 'seconds'} remaining`);
+}
+setInterval(tick, 100);
