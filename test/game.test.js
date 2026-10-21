@@ -103,3 +103,24 @@ test('host category settings sync, survive host transfer, and constrain the game
   await b.ask('start',{rounds:3}); await pause(10);
   assert.ok(game.rooms.get(b.session.code).deck.every(q=>q.category==='food-everyday'));
 });
+
+test('five-question shared log and end-only email retain final scores after reset', async t => {
+ const sent=[]; const {game,url,client}=await setup(t,{notify:async g=>{sent.push(g);return 'accepted';}});
+ const a=await client('Host');await client('Friend',a.session.code);
+ await a.ask('start',{rounds:5});assert.equal(sent.length,0);
+ for(let i=0;i<5;i++) {
+  await a.ask('advance');
+  const r=game.rooms.get(a.session.code);const truth=r.options.find(o=>o.correct);
+  await a.ask('vote',{id:truth.id}); await a.ask('advance');
+  if(i<4) await a.ask('advance');
+ }
+ await pause(15);assert.equal(sent.length,1);assert.equal(sent[0].completedQuestions,5);
+ assert.equal(sent[0].scores.find(p=>p.name==='Host').score,5000);
+ await a.ask('reset');await pause(10);
+ const log=await(await fetch(url+'/api/game-log')).json();
+ assert.equal(log.records.length,1);assert.equal(log.records[0].scores[0].score,5000);
+ assert.equal(log.records[0].emailStatus,'accepted');assert.equal(sent.length,1);
+ assert.ok(!JSON.stringify(log).includes('token'));
+ await a.ask('start',{rounds:5});await a.ask('reset');await pause(10);
+ assert.equal(sent.length,2);assert.equal(sent[1].status,'ended-early');assert.equal(sent[1].completedQuestions,0);
+});

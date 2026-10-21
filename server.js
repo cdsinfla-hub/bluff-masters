@@ -1,14 +1,28 @@
 'use strict';
 const express = require('express');
 const http = require('node:http');
-const { randomBytes, randomInt } = require('node:crypto');
+const { randomBytes, randomInt, randomUUID } = require('node:crypto');
 const { Server } = require('socket.io');
 const bank = require('./questions.json');
 const { choices: categoryChoices, validateCategories, buildDeck } = require('./game-categories');
 const normalize = s => s.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = randomInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
+function createGameServer({ duration = 60000, reconnectGrace = 90000, notify = async () => 'disabled' } = {}) {
+  const history = new Map();
+  const pending = new Set();
+  function record(r, status) {
+    const g = r.gameRecord; if (!g) return;
+    if (g.status === 'in-progress') for (const p of r.players) { const entry = g.scores.find(x => x.id === p.id); if (entry) entry.score = p.score; }
+    if (status && g.status === 'in-progress') {
+      g.status = status; g.endedAt = new Date().toISOString(); g.emailStatus = 'pending';
+      const copy = structuredClone(g);
+      const job = Promise.resolve().then(() => notify(copy)).then(result => { g.emailStatus = result || 'accepted'; }, () => { g.emailStatus = 'failed'; console.error('Game summary email failed; check email service configuration.'); }).finally(() => pending.delete(job));
+      pending.add(job);
+    }
+    history.set(g.id, g);
+    if (history.size > 200) history.delete(history.keys().next().value);
+  }
   const app = express();
   app.disable('x-powered-by');
   app.use((req, res, next) => {
@@ -18,6 +32,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
     next();
   });
   app.get('/health', (req, res) => res.json({ status: 'ok', questionCount: bank.length, categories: categoryChoices.filter(c => c.id !== 'potluck').map(c => ({ id: c.id, label: c.label, count: c.count })) }));
+  app.get('/api/game-log', (req, res) => { res.setHeader('Cache-Control', 'no-store'); res.json({ storage: 'temporary', records: [...history.values()].reverse().map(g => ({ ...g, scores: g.scores.map(({ name, score }) => ({ name, score })) })) }); });
   app.use(express.static(require('node:path').join(__dirname, 'public')));
   const server = http.createServer(app);
   const io = new Server(server, { maxHttpBufferSize: 8192 });
@@ -26,6 +41,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
   const member = s => { const r = rooms.get(s.data.code); return [r, r?.players.find(p => p.id === s.data.playerId)]; };
   function snapshot(r, p) {
     return { code: r.code, phase: r.phase, hostId: r.hostId, me: p.id, round: r.round, rounds: r.rounds, deadline: r.deadline,
+      gameRecord: r.gameRecord || null,
       categories: r.categories, categoryChoices, questionCategory: r.phase !== 'lobby' ? categoryChoices.find(c => c.id === r.question?.category)?.label : null,
       players: r.players.map(x => ({ id: x.id, name: x.name, score: x.score, connected: x.connected, submitted: r.lies.has(x.id), voted: r.votes.has(x.id) })),
       prompt: r.phase !== 'lobby' ? r.question?.prompt : null,
@@ -45,7 +61,12 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
     }
     r.results = { answer: r.question.answer, options: r.options.map(o => ({ text: o.text, correct: o.correct, authors: o.authors.map(id => r.players.find(p => p.id === id)?.name || 'Departed player'), voters: [...r.votes].filter(([,v]) => v === o.id).map(([id]) => r.players.find(p => p.id === id)?.name || 'Departed player') })), gains: Object.fromEntries(gains) };
     for (const p of r.players) p.score += gains.get(p.id) || 0;
-    r.phase = r.round >= r.rounds ? 'finished' : 'reveal'; emit(r);
+    r.phase = r.round >= r.rounds ? 'finished' : 'reveal';
+    if (r.gameRecord) {
+      r.gameRecord.completedQuestions = r.round;
+      record(r, r.phase === 'finished' ? 'completed' : undefined);
+    }
+    emit(r);
   }
   function voting(r) {
     const grouped = new Map();
@@ -67,8 +88,8 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
     else if (players.length && r.phase === 'vote' && players.every(p => r.votes.has(p.id))) reveal(r);
   }
   function remove(r, p) {
-    clearTimeout(p.expiry); r.players = r.players.filter(x => x !== p);
-    if (!r.players.length) { clearTimeout(r.timer); rooms.delete(r.code); return; }
+    clearTimeout(p.expiry); record(r); r.players = r.players.filter(x => x !== p);
+    if (!r.players.length) { record(r, 'ended-early'); clearTimeout(r.timer); rooms.delete(r.code); return; }
     if (r.hostId === p.id) r.hostId = (active(r)[0] || r.players[0]).id;
     maybeAdvance(r); emit(r);
   }
@@ -124,7 +145,8 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
       if (![3,5,10].includes(data.rounds)) throw Error('Choose 3, 5, or 10 rounds.');
       const categories = validateCategories(data.categories === undefined ? r.categories : data.categories);
       const deck = buildDeck(categories, data.rounds);
-      r.categories = categories; r.rounds = data.rounds; r.round = 0; r.deck = deck; r.players.forEach(p => { p.score = 0; }); next(r); ack({ ok: true });
+      r.gameRecord = { id: randomUUID(), roomCode: r.code, players: active(r).map(p => p.name), scores: active(r).map(p => ({ id: p.id, name: p.name, score: 0 })), emailStatus: 'waiting', startedAt: new Date().toISOString(), plannedQuestions: data.rounds, completedQuestions: 0, status: 'in-progress', endedAt: null };
+      r.categories = categories; r.rounds = data.rounds; r.round = 0; r.deck = deck; r.players.forEach(p => { p.score = 0; }); record(r); next(r); ack({ ok: true });
     });
     handle('lie', (data, ack) => {
       const [r,p] = requireMember(); if (r.phase !== 'lie' || r.lies.has(p.id)) throw Error('You cannot submit now.');
@@ -142,7 +164,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
       const [r] = requireMember(true);
       if (r.phase === 'lie') voting(r); else if (r.phase === 'vote') reveal(r); else if (r.phase === 'reveal') next(r); else throw Error('Cannot advance now.'); ack({ ok: true });
     });
-    handle('reset', (data, ack) => { const [r] = requireMember(true); clearTimeout(r.timer); Object.assign(r, { phase: 'lobby', round: 0, deadline: null, results: null, lies: new Map(), votes: new Map() }); r.players.forEach(p => { p.score = 0; }); emit(r); ack({ ok: true }); });
+    handle('reset', (data, ack) => { const [r] = requireMember(true); clearTimeout(r.timer); record(r, 'ended-early'); Object.assign(r, { phase: 'lobby', round: 0, deadline: null, results: null, lies: new Map(), votes: new Map() }); r.players.forEach(p => { p.score = 0; }); emit(r); ack({ ok: true }); });
     handle('kick', (data, ack) => {
       const [r,p] = requireMember(true); const target = r.players.find(x => x.id === data.id);
       if (!target || target === p) throw Error('Choose another player.');
@@ -155,11 +177,12 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
       p.expiry = setTimeout(() => remove(r,p), reconnectGrace); maybeAdvance(r); emit(r);
     });
   });
-  async function close() { await new Promise(resolve => io.close(resolve)); for (const r of rooms.values()) { clearTimeout(r.timer); r.players.forEach(p => clearTimeout(p.expiry)); } }
+  async function close() { for (const r of rooms.values()) record(r, 'interrupted'); await Promise.allSettled([...pending]); await new Promise(resolve => io.close(resolve)); for (const r of rooms.values()) { clearTimeout(r.timer); r.players.forEach(p => clearTimeout(p.expiry)); } }
   return { app, server, io, rooms, close };
 }
 if (require.main === module) {
-  const game = createGameServer(); game.server.listen(process.env.PORT || 3000, '0.0.0.0', () => console.log('Bluff Masters is ready'));
+  const { createEmailNotifier } = require('./game-email');
+  const game = createGameServer({ notify: createEmailNotifier(process.env) }); game.server.listen(process.env.PORT || 3000, '0.0.0.0', () => console.log('Bluff Masters is ready'));
   for (const signal of ['SIGTERM', 'SIGINT']) process.on(signal, () => game.close().then(() => process.exit(0)));
 }
 module.exports = { createGameServer };

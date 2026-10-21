@@ -50,7 +50,7 @@ function renderCategories(s) {
   for (const input of $('categories').querySelectorAll('input')) input.checked = s.categories.includes(input.value);
   $('rounds').value = String(s.rounds);
   const labels = s.categoryChoices.filter(c => s.categories.includes(c.id)).map(c => c.label);
-  $('category-summary').textContent = s.phase === 'lobby' ? `${s.rounds} rounds · ${labels.join(' + ')}` : s.questionCategory;
+  $('category-summary').textContent = s.phase === 'lobby' ? `${s.rounds} questions · ${labels.join(' + ')}` : s.questionCategory;
 }
 $('advance').onclick = () => send('advance');
 $('reset').onclick = () => { if (confirm('Return everyone to the lobby and reset scores?')) send('reset'); };

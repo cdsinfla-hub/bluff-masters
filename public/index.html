@@ -11,7 +11,7 @@
   <div class="tags"><span>2–8 players</span><span>Play on your phone</span><span>No accounts</span></div>
   <form id="join-form" class="card">
     <label for="name">Your nickname</label><input id="name" maxlength="20" autocomplete="nickname" placeholder="The one everyone trusts" required>
-    <label for="code">Room code <small>if joining friends</small></label><input id="code" maxlength="6" autocomplete="off" placeholder="ABC123" pattern="[A-Za-z0-9]{6}">
+    <label for="code">Room code if joining friends <small>- Leave blank if you are the Host</small></label><input id="code" maxlength="6" autocomplete="off" placeholder="ABC123" pattern="[A-Za-z0-9]{6}">
     <div class="actions"><button type="submit">Join room →</button><button type="button" id="create" class="secondary">Create a room</button></div>
     <button type="button" id="rejoin" class="text-button" hidden>Reconnect to your last room</button>
   </form>
@@ -27,7 +27,7 @@
     <form id="lie-form" class="card" hidden><label for="lie">Sell us your best bluff</label><input id="lie" maxlength="100" autocomplete="off" required placeholder="Make it sound like a fact…"><button>Lock in my bluff →</button></form>
     <div id="waiting" class="card" hidden></div><div id="ballot" class="ballot"></div>
     <div id="results"></div>
-    <div id="host" class="card" hidden><div class="eyebrow">HOST DESK</div><div id="settings"><label for="rounds">Game length</label><select id="rounds"><option value="3">3 rounds · Quick game</option><option value="5" selected>5 rounds · Classic</option><option value="10">10 rounds · Marathon</option></select><fieldset class="category-picker"><legend>Choose your categories</legend><p class="muted" id="category-help">Pick one or mix several. Potluck mixes all nine topics. Questions are shared evenly across your choices.</p><div id="categories" class="category-grid" aria-describedby="category-help"></div></fieldset><button id="start">Start game →</button></div><button id="advance" hidden></button><button id="reset" class="secondary" hidden>Return everyone to lobby</button></div>
+    <div id="host" class="card" hidden><div class="eyebrow">HOST DESK</div><div id="settings"><label for="rounds">Game length</label><select id="rounds"><option value="3">3 questions · Quick game</option><option value="5" selected>5 questions · Classic</option><option value="10">10 questions · Marathon</option></select><fieldset class="category-picker"><legend>Choose your categories</legend><p class="muted" id="category-help">Pick one or mix several. Potluck mixes all nine topics. Questions are shared evenly across your choices.</p><div id="categories" class="category-grid" aria-describedby="category-help"></div></fieldset><button id="start">Start game →</button></div><button id="advance" hidden></button><button id="reset" class="secondary" hidden>Return everyone to lobby</button></div>
   </div><aside class="card"><div class="eyebrow">THE USUAL SUSPECTS</div><h2>Players <span id="count"></span></h2><ol id="players"></ol><p class="muted">+1,000 for the truth<br>+500 for each player your bluff fools<br>Duplicate bluffs share full credit.</p></aside></div>
 </section>
 <p id="notice" role="status" aria-live="polite"></p>
