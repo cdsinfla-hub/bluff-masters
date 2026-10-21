@@ -21,7 +21,7 @@ async function setup(t, options) {
 test('2-player full game: privacy, permissions, self-votes, scoring, reset, HTTP', async t => {
   const { game, url, client } = await setup(t);
   assert.equal((await (await fetch(url + '/health')).json()).status, 'ok');
-  assert.equal((await (await fetch(url + '/health')).json()).questionCount,2060);
+  assert.equal((await (await fetch(url + '/health')).json()).questionCount,2391);
   assert.match(await (await fetch(url)).text(), /BLUFF MASTERS/);
   const a = await client('Host'); const b = await client('Guest', a.session.code);
   assert.ok((await b.ask('start', { rounds:3 })).error);
@@ -61,6 +61,29 @@ test('8-player capacity, reconnect tokens, host transfer, removal, and cleanup',
   assert.ok((await resumed.ask('start',{rounds:3})).error);
   const added = await client('New guest',code); assert.ok(added.session.token);
   added.disconnect(); await pause(350); assert.equal(players[0].latest.players.length,7);
+});
+
+test('uploaded aliases are truth and lie-entry snapshots contain no answer suggestions', async t => {
+  const { game, url, client } = await setup(t);
+  const a = await client('Host'); const b = await client('Guest', a.session.code);
+  await a.ask('start', { rounds: 3, categories: ['weird-wacky'] });
+  const room = game.rooms.get(a.session.code);
+  const question = bank.find(q => q.source === 'User-provided upload' && q.answer === 'cat urine');
+  room.deck[1] = question;
+  await a.ask('advance'); await a.ask('advance'); await a.ask('advance'); await pause(10);
+  assert.equal(a.latest.prompt, question.prompt);
+  for (const s of [a.latest, b.latest]) {
+    assert.equal(s.phase, 'lie');
+    assert.deepEqual(s.options, []);
+    assert.equal(s.results, null);
+    for (const key of ['answer', 'decoys', 'suggestions', 'alternateSpellings', 'question']) assert.ok(!Object.hasOwn(s, key));
+    for (const text of [question.answer, ...question.decoys, ...question.alternateSpellings]) assert.ok(!JSON.stringify(s).includes(text));
+  }
+  for (const text of [question.answer, ...question.alternateSpellings, '  CAT PEE!  ']) {
+    assert.match((await a.ask('lie', { text })).error, /truth/);
+  }
+  assert.deepEqual(await a.ask('lie', { text: 'A fake smell' }), { ok: true });
+  for (const path of ['/questions.json', '/data/questions.json']) assert.equal((await fetch(url + path)).status, 404);
 });
 test('timers advance idle rounds; duplicate bluffs credit each author', async t => {
   const { client } = await setup(t,{duration:250});

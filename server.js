@@ -152,7 +152,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000, notify = a
       const [r,p] = requireMember(); if (r.phase !== 'lie' || r.lies.has(p.id)) throw Error('You cannot submit now.');
       const value = typeof data.text === 'string' ? data.text.trim().replace(/\s+/g, ' ') : '';
       if (!value || value.length > 100 || !normalize(value)) throw Error('Enter an answer of 1–100 characters.');
-      if (normalize(value) === normalize(r.question.answer)) throw Error('That is the truth! Invent a different answer.');
+      if ([r.question.answer, ...(r.question.alternateSpellings || [])].some(answer => normalize(value) === normalize(answer))) throw Error('That is the truth! Invent a different answer.');
       r.lies.set(p.id, value); ack({ ok: true }); maybeAdvance(r); emit(r);
     });
     handle('vote', (data, ack) => {

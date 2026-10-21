@@ -1,12 +1,12 @@
 # Bluff Masters
 
-An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **2,060 bundled questions** and house decoys. All 1,030 existing questions were retained and categorized, and 1,000 more were added with priority given to the smallest topic pools. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
+An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **2,391 bundled questions** and house decoys. All 1,030 existing questions were retained and categorized, and 1,000 more were added with priority given to the smallest topic pools. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
 
 ## Play
 
 1. One player creates a room and shares its six-character code or invite link.
 2. Join with 2–8 players using unique nicknames. The host chooses 3, 5, or 10 rounds and one or more categories, or selects **Potluck** for all topics.
-3. Everyone has 60 seconds to invent a believable fake answer to the same trivia question. Submitting the exact truth is rejected; invent a bluff instead.
+3. Everyone has 60 seconds to invent a believable fake answer to the same trivia question. Submitting the truth or a provided alternate spelling is rejected; invent a bluff instead.
 4. Vote for the truth within 60 seconds. Your own bluff is hidden. Missing submissions get no bluff; missing votes earn no truth points.
 5. Earn **1,000 points** for choosing the truth and **500 points per player fooled** by your bluff. Authors of identical bluffs each receive the full fooling points. House decoys earn nobody points.
 6. Results identify the truth, bluff authors, votes, and points. The host advances to the next round. The highest total wins; ties share victory.
@@ -28,10 +28,10 @@ In the lobby, the host can select any combination of ten categories. **Potluck**
 | Books & Arts | 228 |
 | Games & Sports | 228 |
 | Food & Everyday Life | 220 |
-| Weird & Wacky | 30 |
-| **Potluck — all topics** | **2,060** |
+| Weird & Wacky | 361 |
+| **Potluck — all topics** | **2,391** |
 
-Potluck targets 75% Weird & Wacky, rounded to 2 of 3, 4 of 5, or 8 of 10 questions. The same quota applies when Weird & Wacky is mixed with selected topics; the rest are distributed evenly across those selected topics. Choosing Weird & Wacky alone gives 100%. Excluding it respects the host's choices and balances only those topics. The completed deck is shuffled and never repeats a question within a game. All 2,030 previous entries are retained; 30 newly researched, originally worded oddities have per-question source URLs in the bank. This changes the proportion drawn during play, rather than claiming that 75% of all stored entries are oddities. `categories.json` defines the ten categories and keeps Potluck last.
+Potluck targets 75% Weird & Wacky, rounded to 2 of 3, 4 of 5, or 8 of 10 questions. The same quota applies when Weird & Wacky is mixed with selected topics; the rest are distributed evenly across those selected topics. Choosing Weird & Wacky alone gives 100%. Excluding it respects the host's choices and balances only those topics. The completed deck is shuffled and never repeats a question within a game. All 2,060 previous entries are retained, including 30 researched oddities with source URLs. Another 331 user-provided questions are included in Weird & Wacky; their supplied answers are preserved and have not been independently fact-checked. This changes the proportion drawn during play, rather than claiming that 75% of all stored entries are oddities. `categories.json` defines the ten categories and keeps Potluck last.
 
 ## Run locally
 
@@ -86,3 +86,7 @@ The unlinked `/game-log.html` page shows the most recent 200 games from all room
 Optional summaries use Resend over HTTPS. In Render Environment, set `RESEND_API_KEY`, `GAME_ALERT_TO` (recipient email), and `GAME_ALERT_FROM` (authorized sender). Optional `GAME_ALERT_TIMEZONE` defaults to America/New_York. Keep credentials and recipients out of Git. All three required settings must be present to enable sending. The Free plan currently allows 3,000 emails/month, at most 100/day; check https://resend.com/pricing before signup. The onboarding@resend.dev test sender only sends to the Resend account's own email; production sending requires a verified domain you control. Yahoo cannot be used as a verified sending domain.
 
 A summary is attempted once after the final question, an early reset, abandonment after reconnect expiry, or orderly shutdown, with final scores and actual completed questions. Abrupt server termination cannot send an email. Failures do not interrupt games and are not automatically retried. Log email status `accepted` means accepted by the provider, not confirmed inbox delivery. Without provider setup it reads `disabled`. Configure and verify an actual completed game's email before treating this as a lasting archive. No live email is enabled by source code alone.
+
+### User-provided fill-in-the-blank import
+
+The active bank is root `questions.json` (not `data/questions.json`). The 331 uploaded entries use `prompt`, `answer`, three `decoys`, and `alternateSpellings`. The original upload category and round are retained as `sourceCategory` and `sourceRound`. HTML italics are converted to plain text, `<BLANK>` becomes `_____`, and the 49 final-round clues receive a trailing blank. Suggestions supply voting decoys only. Neither decoys nor alternate answers are sent to players during lie entry.

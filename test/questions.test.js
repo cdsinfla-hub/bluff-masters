@@ -5,10 +5,10 @@ const bank = require('../questions.json');
 const catalog = require('../categories.json');
 const normalize = value => value.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 
-test('expanded bank contains 2,000 attributed additions plus 30 researched oddities and the original 30', () => {
-  assert.equal(bank.length, 2060);
+test('expanded bank retains previous questions and adds 331 uploaded oddities', () => {
+  assert.equal(bank.length, 2391);
   assert.equal(bank.slice(0,30).filter(q => !q.source).length,30);
-  assert.equal(bank.slice(30).filter(q => ['Open Trivia Database','OpenTriviaQA','Bluff Masters'].includes(q.source)).length,2030);
+  assert.equal(bank.slice(30,2060).filter(q => ['Open Trivia Database','OpenTriviaQA','Bluff Masters'].includes(q.source)).length,2030);
   const ids = new Set(catalog.filter(c => c.id !== 'potluck').map(c => c.id));
   const prompts = new Set();
   for (const q of bank) {
@@ -29,6 +29,22 @@ test('expanded bank contains 2,000 attributed additions plus 30 researched oddit
   }
 });
 
+test('uploaded questions have playable blanks, aliases, and distinct server-side decoys', () => {
+  const rows = bank.filter(q => q.source === 'User-provided upload');
+  assert.equal(rows.length, 331);
+  assert.equal(rows.filter(q => q.sourceRound === 'normal').length, 282);
+  assert.equal(rows.filter(q => q.sourceRound === 'final').length, 49);
+  assert.equal(rows.reduce((n, q) => n + q.alternateSpellings.length, 0), 695);
+  for (const q of rows) {
+    assert.equal(q.category, 'weird-wacky');
+    assert.ok(q.prompt.includes('_____'));
+    assert.ok(!Object.hasOwn(q, 'suggestions'));
+    assert.ok(q.alternateSpellings.every(a => typeof a === 'string' && a.trim()));
+    const truth = new Set([q.answer, ...q.alternateSpellings].map(normalize));
+    assert.ok(q.decoys.every(d => !truth.has(normalize(d))), q.prompt);
+  }
+});
+
 test('the original nine topics retain their pools and Weird & Wacky has cited facts; Potluck comes last', () => {
   const added=bank.slice(30);
   assert.equal(catalog.length,11);
@@ -38,4 +54,4 @@ test('the original nine topics retain their pools and Weird & Wacky has cited fa
   assert.ok(added.filter(q => ['medium','hard'].includes(q.difficulty)).length>=750);
 });
 
-test('new oddities are original fill-in-the-blank questions with research links',()=>{const rows=bank.filter(q=>q.category==='weird-wacky');assert.equal(rows.length,30);for(const q of rows){assert.ok(q.prompt.includes('_____'));assert.match(q.sourceUrl,/^https:\/\//);assert.equal(q.source,'Bluff Masters');}});
+test('new oddities are original fill-in-the-blank questions with research links',()=>{const rows=bank.filter(q=>q.category==='weird-wacky' && q.source==='Bluff Masters');assert.equal(rows.length,30);for(const q of rows){assert.ok(q.prompt.includes('_____'));assert.match(q.sourceUrl,/^https:\/\//);assert.equal(q.source,'Bluff Masters');}});

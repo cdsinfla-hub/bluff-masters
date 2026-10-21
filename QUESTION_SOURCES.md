@@ -1,6 +1,6 @@
 # Question sources and attribution
 
-The question bank contains **2,060 questions**. The bank now includes 30 newly researched Weird & Wacky questions, with the prior 2,030 entries retained. In the earlier expansion, all 1,030 previous prompts, answers, and decoys are preserved; every entry now has one playable category. The latest expansion added exactly 1,000 questions: 547 adapted from Open Trivia Database, 424 adapted from OpenTriviaQA, and 29 newly worded Bluff Masters questions. Across the complete bank, there are 1,547 Open Trivia Database entries, 424 OpenTriviaQA entries, 59 newly worded Bluff Masters entries, and the original 30.
+The question bank contains **2,391 questions** (the prior 2,060 plus 331 user-provided entries). The bank now includes 30 newly researched Weird & Wacky questions, with the prior 2,030 entries retained. In the earlier expansion, all 1,030 previous prompts, answers, and decoys are preserved; every entry now has one playable category. The latest expansion added exactly 1,000 questions: 547 adapted from Open Trivia Database, 424 adapted from OpenTriviaQA, and 29 newly worded Bluff Masters questions. Across the complete bank, there are 1,547 Open Trivia Database entries, 424 OpenTriviaQA entries, 59 newly worded Bluff Masters entries, and the original 30.
 
 ## Expansion
 
@@ -33,3 +33,7 @@ The public game links to `/credits.html` for attribution without showing answers
 ## Weird & Wacky expansion
 
 Thirty original fill-in-the-blank questions were added to the retained 2,030-entry bank. These new question texts and original decoys are offered under CC BY-SA 4.0; factual research links are recorded in each entry's `sourceUrl`. Source publishers retain all rights in their articles; these are newly written questions about facts, not copied trivia prompts. No endorsement is implied. Research includes the Natural History Museum, NASA, Smithsonian, National Geographic, Guinness World Records and the official Ig Nobel winners archive. Potluck draws approximately 75% from this new category; this is a gameplay weighting, not a claim about the raw bank's composition.
+
+## User-provided upload (2026-10-21)
+
+Imported 331 entries from `Pasted text(20261021-195205).txt`: 282 normal and 49 final-round clues, with 695 supplied alternate spellings. All supplied answers are preserved. The final-round clues receive a trailing blank; HTML italic tags are removed for plain-text rendering. Three distinct suggestions per entry become server-side voting decoys, excluding the truth and alternate answers. These entries carry `source: "User-provided upload"`; the original category and round are retained separately. No independent factual verification or license determination was performed for this upload; the CC BY-SA notices above apply to the collections described there and do not assert a license for the uploaded material. Some supplied claims are historical, adult-themed, or potentially dated.

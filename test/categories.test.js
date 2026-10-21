@@ -25,7 +25,7 @@ test('Potluck uses the Weird & Wacky quota and exposes accurate counts without q
   assert.equal(deck.filter(q=>q.category==='weird-wacky').length,8);
   for(const n of [3,5,10]) for(let i=0;i<30;i++) { const d=buildDeck(['potluck'],n); assert.equal(d.filter(q=>q.category==='weird-wacky').length,Math.round(n*.75)); assert.equal(new Set(d.map(q=>q.prompt)).size,n); }
   assert.equal(new Set(deck.map(q=>q.prompt)).size,10);
-  assert.equal(choices.at(-1).count,2060);
+  assert.equal(choices.at(-1).count,2391);
   for(const c of choices.slice(0,-1)) assert.equal(c.count,bank.filter(q=>q.category===c.id).length);
   assert.ok(!JSON.stringify(choices).includes('answer'));
 });
