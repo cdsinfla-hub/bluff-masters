@@ -68,7 +68,7 @@ socket.on('state', s => {
   $('waiting').hidden = !((s.phase === 'lie' && s.submitted) || (s.phase === 'vote' && s.voted));
   $('waiting').textContent = s.phase === 'lie' ? 'Bluff locked in. Get your poker face ready.' : 'Vote locked in. The truth is on its way.';
   $('ballot').replaceChildren();
-  if (s.phase === 'vote' && !s.voted) for (const option of s.options) { const b = el('button', option.text); b.onclick = () => send('vote', { id: option.id }); $('ballot').append(b); }
+  if (s.phase === 'vote' && !s.voted) for (const option of s.options) { const b = el('button', option.text.toUpperCase()); b.onclick = () => send('vote', { id: option.id }); $('ballot').append(b); }
   const host = s.hostId === s.me;
   renderCategories(s);
   $('host').hidden = !host; $('settings').hidden = s.phase !== 'lobby'; $('reset').hidden = s.phase === 'lobby';
@@ -87,7 +87,7 @@ socket.on('state', s => {
   $('results').replaceChildren();
   if (s.results) {
     if (s.phase === 'finished') { const winners = ranked.filter(p => p.score === ranked[0].score).map(p => p.name).join(' & '); $('results').append(el('p', `✦ ${winners} ${ranked.filter(p => p.score === ranked[0].score).length > 1 ? 'win' : 'wins'}!`, 'winner')); }
-    for (const option of s.results.options) { const box = el('div', null, `result${option.correct ? ' correct' : ''}`); box.append(el('div', option.correct ? 'THE TRUTH' : option.authors.length ? `BLUFF BY ${option.authors.join(' & ')}` : 'HOUSE DECOY', 'eyebrow'), el('h3', option.text), el('p', option.voters.length ? `Picked by ${option.voters.join(', ')}` : 'Nobody picked this.')); $('results').append(box); }
+    for (const option of s.results.options) { const box = el('div', null, `result${option.correct ? ' correct' : ''}`); box.append(el('div', option.correct ? 'THE TRUTH' : option.authors.length ? `BLUFF BY ${option.authors.join(' & ')}` : 'HOUSE DECOY', 'eyebrow'), el('h3', option.text.toUpperCase()), el('p', option.voters.length ? `Picked by ${option.voters.join(', ')}` : 'Nobody picked this.')); $('results').append(box); }
     const gain = s.results.gains[s.me] || 0; $('results').prepend(el('p', `You earned +${gain.toLocaleString()} this round.`, 'eyebrow'));
   }
   tick();
