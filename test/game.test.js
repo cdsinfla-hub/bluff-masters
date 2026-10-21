@@ -21,7 +21,7 @@ async function setup(t, options) {
 test('2-player full game: privacy, permissions, self-votes, scoring, reset, HTTP', async t => {
   const { game, url, client } = await setup(t);
   assert.equal((await (await fetch(url + '/health')).json()).status, 'ok');
-  assert.equal((await (await fetch(url + '/health')).json()).questionCount,1030);
+  assert.equal((await (await fetch(url + '/health')).json()).questionCount,2030);
   assert.match(await (await fetch(url)).text(), /BLUFF MASTERS/);
   const a = await client('Host'); const b = await client('Guest', a.session.code);
   assert.ok((await b.ask('start', { rounds:3 })).error);
@@ -72,4 +72,34 @@ test('timers advance idle rounds; duplicate bluffs credit each author', async t 
   await c.ask('vote',{id:c.latest.options.find(o => /same fake/i.test(o.text)).id});
   await a.ask('advance'); await pause(10);
   assert.equal(a.latest.results.gains[a.latest.me],500); assert.equal(b.latest.results.gains[b.latest.me],500);
+});
+
+test('host category settings sync, survive host transfer, and constrain the game', async t => {
+  const { game,client } = await setup(t);
+  const a=await client('Host'); const b=await client('Guest',a.session.code);
+  await client('Third player',a.session.code);
+  assert.deepEqual(a.latest.categories,['potluck']);
+  assert.equal(a.latest.categoryChoices.length,10);
+  assert.equal(a.latest.categoryChoices.at(-1).id,'potluck');
+  assert.ok((await b.ask('configure',{categories:['music']})).error);
+  for (const categories of [[],['missing'],['music','potluck'],null,'music']) {
+    assert.ok((await a.ask('configure',{categories})).error);
+    assert.ok((await a.ask('start',{rounds:3,categories})).error);
+  }
+  assert.deepEqual((await a.ask('configure',{rounds:10,categories:['music','animals-nature']})),{ok:true});
+  await pause(10); assert.deepEqual(b.latest.categories,['animals-nature','music']);
+  assert.equal(b.latest.rounds,10);
+  a.disconnect(); await pause(20); assert.equal(b.latest.hostId,b.latest.me);
+  assert.deepEqual(b.latest.categories,['animals-nature','music']);
+  await b.ask('start',{rounds:10}); await pause(10);
+  const deck=game.rooms.get(b.session.code).deck;
+  assert.equal(deck.length,10); assert.equal(deck.filter(q=>q.category==='music').length,5);
+  assert.equal(deck.filter(q=>q.category==='animals-nature').length,5);
+  assert.equal(b.latest.results,null); assert.ok(b.latest.questionCategory);
+  assert.ok((await b.ask('configure',{categories:['history-myth']})).error);
+  await b.ask('reset'); await pause(10);
+  assert.deepEqual(b.latest.categories,['animals-nature','music']);
+  await b.ask('configure',{categories:['food-everyday'],rounds:3});
+  await b.ask('start',{rounds:3}); await pause(10);
+  assert.ok(game.rooms.get(b.session.code).deck.every(q=>q.category==='food-everyday'));
 });

@@ -1,6 +1,6 @@
 # Question sources and attribution
 
-The question bank contains **1,030 questions**: the original 30 entries, preserved unchanged, followed by **1,000 adapted Open Trivia Database questions**.
+The question bank contains **2,030 questions**. All 1,030 previous prompts, answers, and decoys are preserved; every entry now has one playable category. The latest expansion added exactly 1,000 questions: 547 adapted from Open Trivia Database, 424 adapted from OpenTriviaQA, and 29 newly worded Bluff Masters questions. Across the complete bank, there are 1,547 Open Trivia Database entries, 424 OpenTriviaQA entries, 29 new Bluff Masters entries, and the original 30.
 
 ## Expansion
 
@@ -8,11 +8,23 @@ The question bank contains **1,030 questions**: the original 30 entries, preserv
 - **Creators:** Open Trivia Database community contributors; API provided by PixelTail Games.
 - **Original source:** https://opentdb.com/
 - **Published data license:** [Creative Commons Attribution–ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/), as stated in [Open Trivia Database's API documentation](https://opentdb.com/api_config.php/).
-- **Retrieved archive:** [leakyhose/open-trivia-script-data](https://github.com/leakyhose/open-trivia-script-data), formerly named `open-trivia-dataset`, commit `77d8e3cb5c8e264d50220eee75cfe08d233b1910`, files `data/difficulty_medium.json`, `data/difficulty_hard.json`, and `data/difficulty_easy.json`.
-- **Modifications:** Selected 1,000 questions; decoded HTML entities; normalized spacing; adapted fields to `prompt`, `answer`, and `decoys`; corrected or clarified selected wording, spelling, answers, and decoys. Retained category and difficulty metadata. Removed many ambiguous, stale, duplicate, choice-dependent, or unsuitable candidates.
+- **Retrieved archive:** [leakyhose/open-trivia-script-data](https://github.com/leakyhose/open-trivia-script-data), formerly named `open-trivia-dataset`, commit `77d8e3cb5c8e264d50220eee75cfe08d233b1910`, files `data/difficulty_medium.json`, `data/difficulty_hard.json`, `data/difficulty_easy.json`, and `data/all_questions.json`.
+- **Modifications:** Selected questions; decoded HTML entities; normalized spacing; adapted fields to `prompt`, `answer`, and `decoys`; corrected or clarified selected wording, spelling, answers, and decoys; assigned game categories. Retained source category as `sourceCategory` and source difficulty metadata. Removed many ambiguous, stale, duplicate, choice-dependent, or unsuitable candidates.
 - **Identification:** Imported entries carry `"source": "Open Trivia Database"`. The imported entries and adaptations are distributed under **CC BY-SA 4.0**. See `LICENSE-QUESTIONS.md` for the license text. This attribution does not assert a license for the application code or change the status of the original 30 questions.
 
 The game bundles the selected data locally. Gameplay does not contact the upstream API. No original contributor endorsement is implied. Source data is community supplied; the editorial review and automated checks do not independently certify every fact. Please report a questionable prompt in a repository issue so it can be corrected or replaced.
+
+## OpenTriviaQA additions
+
+- **Work and creators:** [OpenTriviaQA](https://github.com/uberspot/OpenTriviaQA), collected and maintained by uberspot and project contributors.
+- **Source revision:** `dcc1cdf36c2985ed5c849d1f2265c5041ffcdfb9`.
+- **Source files:** The `categories/` collections for animals, hobbies, humanities, literature, geography, science-technology, and for-kids.
+- **License:** [CC BY-SA 4.0](https://github.com/uberspot/OpenTriviaQA/blob/dcc1cdf36c2985ed5c849d1f2265c5041ffcdfb9/LICENSE).
+- **Modifications:** Parsed the question/answer/choice format, selected self-contained questions, decoded mixed text encodings, normalized whitespace, adapted wording and selected answers/decoys, removed unsuitable or repeated questions, and assigned one playable topic per entry. Imported entries carry `"source": "OpenTriviaQA"`. Their adaptations remain under CC BY-SA 4.0, with no endorsement implied.
+
+## Newly worded category questions
+
+The 29 entries carrying `"source": "Bluff Masters"` were written for the category expansion, principally to strengthen Animals & Nature and World & Geography. Their wording is also offered under CC BY-SA 4.0. This does not change the status of the original 30 questions or grant a license for unrelated application code. Category labels and source metadata are editorial assignments, not claims by the upstream creators.
 
 ## Distribution
 

@@ -25,7 +25,33 @@ socket.on('connect_error', () => { $('connection').textContent = '○ Server una
 socket.on('removed', () => { save(null); state = null; $('entry').hidden = false; $('game').hidden = true; $('rejoin').hidden = true; notice('The host removed you from the room.'); });
 $('leave').onclick = async () => { if (await send('leave')) { save(null); state = null; $('entry').hidden = false; $('game').hidden = true; $('rejoin').hidden = true; } };
 $('copy').onclick = async () => { try { await navigator.clipboard.writeText(`${location.origin}/?room=${state.code}`); notice('Invite link copied. Send it to your friends!'); } catch { notice(`Share room code ${state.code} and this page's address.`); } };
-$('start').onclick = () => send('start', { rounds: Number($('rounds').value) });
+function selectedCategories() { return [...$('categories').querySelectorAll('input:checked')].map(input => input.value); }
+$('start').onclick = () => send('start', { rounds: Number($('rounds').value), categories: selectedCategories() });
+$('rounds').onchange = () => send('configure', { rounds: Number($('rounds').value) });
+let categoryCatalogKey;
+function renderCategories(s) {
+  const key = JSON.stringify(s.categoryChoices);
+  if (key !== categoryCatalogKey) {
+    $('categories').replaceChildren(); categoryCatalogKey = key;
+    for (const category of s.categoryChoices) {
+      const label = el('label', null, `category-option${category.id === 'potluck' ? ' potluck' : ''}`);
+      const input = document.createElement('input'); input.type = 'checkbox'; input.value = category.id; input.name = 'categories';
+      const text = el('span'); text.append(el('strong', category.label), el('small', `${category.count.toLocaleString()} questions · ${category.description}`));
+      input.onchange = async () => {
+        const inputs = [...$('categories').querySelectorAll('input')];
+        if (input.checked) for (const other of inputs) if (input.value === 'potluck' ? other !== input : other.value === 'potluck') other.checked = false;
+        const selected = selectedCategories();
+        if (!selected.length) { input.checked = true; return notice('Keep at least one category selected, or choose Potluck.'); }
+        if (!await send('configure', { categories: selected })) for (const other of inputs) other.checked = state.categories.includes(other.value);
+      };
+      label.append(input,text); $('categories').append(label);
+    }
+  }
+  for (const input of $('categories').querySelectorAll('input')) input.checked = s.categories.includes(input.value);
+  $('rounds').value = String(s.rounds);
+  const labels = s.categoryChoices.filter(c => s.categories.includes(c.id)).map(c => c.label);
+  $('category-summary').textContent = s.phase === 'lobby' ? `${s.rounds} rounds · ${labels.join(' + ')}` : s.questionCategory;
+}
 $('advance').onclick = () => send('advance');
 $('reset').onclick = () => { if (confirm('Return everyone to the lobby and reset scores?')) send('reset'); };
 $('lie-form').onsubmit = async e => { e.preventDefault(); if (await send('lie', { text: $('lie').value })) $('lie').value = ''; };
@@ -44,6 +70,7 @@ socket.on('state', s => {
   $('ballot').replaceChildren();
   if (s.phase === 'vote' && !s.voted) for (const option of s.options) { const b = el('button', option.text); b.onclick = () => send('vote', { id: option.id }); $('ballot').append(b); }
   const host = s.hostId === s.me;
+  renderCategories(s);
   $('host').hidden = !host; $('settings').hidden = s.phase !== 'lobby'; $('reset').hidden = s.phase === 'lobby';
   $('start').disabled = s.players.filter(p => p.connected).length < 2;
   $('advance').hidden = !['lie','vote','reveal'].includes(s.phase);

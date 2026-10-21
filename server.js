@@ -4,6 +4,7 @@ const http = require('node:http');
 const { randomBytes, randomInt } = require('node:crypto');
 const { Server } = require('socket.io');
 const bank = require('./questions.json');
+const { choices: categoryChoices, validateCategories, buildDeck } = require('./game-categories');
 const normalize = s => s.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = randomInt(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -16,7 +17,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' ws: wss:; img-src 'self' data:; frame-ancestors 'none'");
     next();
   });
-  app.get('/health', (req, res) => res.json({ status: 'ok', questionCount: bank.length }));
+  app.get('/health', (req, res) => res.json({ status: 'ok', questionCount: bank.length, categories: categoryChoices.filter(c => c.id !== 'potluck').map(c => ({ id: c.id, label: c.label, count: c.count })) }));
   app.use(express.static(require('node:path').join(__dirname, 'public')));
   const server = http.createServer(app);
   const io = new Server(server, { maxHttpBufferSize: 8192 });
@@ -25,6 +26,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
   const member = s => { const r = rooms.get(s.data.code); return [r, r?.players.find(p => p.id === s.data.playerId)]; };
   function snapshot(r, p) {
     return { code: r.code, phase: r.phase, hostId: r.hostId, me: p.id, round: r.round, rounds: r.rounds, deadline: r.deadline,
+      categories: r.categories, categoryChoices, questionCategory: r.phase !== 'lobby' ? categoryChoices.find(c => c.id === r.question?.category)?.label : null,
       players: r.players.map(x => ({ id: x.id, name: x.name, score: x.score, connected: x.connected, submitted: r.lies.has(x.id), voted: r.votes.has(x.id) })),
       prompt: r.phase !== 'lobby' ? r.question?.prompt : null,
       submitted: r.lies.has(p.id), voted: r.votes.has(p.id),
@@ -90,7 +92,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
         if (!candidate || candidate.length > 20 || /[\p{C}]/u.test(candidate)) throw Error('Use a name of 1–20 characters.');
         if (rooms.size >= 500) throw Error('Server is full. Try again later.');
         let fresh; do { fresh = randomBytes(3).toString('hex').toUpperCase(); } while (rooms.has(fresh));
-        r = { code: fresh, players: [], phase: 'lobby', round: 0, rounds: 5, lies: new Map(), votes: new Map(), deadline: null }; rooms.set(fresh, r);
+        r = { code: fresh, players: [], phase: 'lobby', round: 0, rounds: 5, categories: ['potluck'], lies: new Map(), votes: new Map(), deadline: null }; rooms.set(fresh, r);
       }
       if (!r) throw Error('Room not found. Check the code.');
       let p = r.players.find(x => typeof data.token === 'string' && x.token === data.token);
@@ -109,10 +111,20 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
       socket.data.code = r.code; socket.data.playerId = p.id;
       ack({ token: p.token, code: r.code }); emit(r);
     });
+    handle('configure', (data, ack) => {
+      const [r] = requireMember(true);
+      if (r.phase !== 'lobby') throw Error('Change categories and game length in the lobby.');
+      const categories = validateCategories(data.categories === undefined ? r.categories : data.categories);
+      const rounds = data.rounds === undefined ? r.rounds : data.rounds;
+      if (![3,5,10].includes(rounds)) throw Error('Choose 3, 5, or 10 rounds.');
+      r.categories = categories; r.rounds = rounds; emit(r); ack({ ok: true });
+    });
     handle('start', (data, ack) => {
       const [r] = requireMember(true); if (r.phase !== 'lobby' || active(r).length < 2) throw Error('Start from the lobby with at least 2 connected players.');
       if (![3,5,10].includes(data.rounds)) throw Error('Choose 3, 5, or 10 rounds.');
-      r.rounds = data.rounds; r.round = 0; r.deck = shuffle(bank); r.players.forEach(p => { p.score = 0; }); next(r); ack({ ok: true });
+      const categories = validateCategories(data.categories === undefined ? r.categories : data.categories);
+      const deck = buildDeck(categories, data.rounds);
+      r.categories = categories; r.rounds = data.rounds; r.round = 0; r.deck = deck; r.players.forEach(p => { p.score = 0; }); next(r); ack({ ok: true });
     });
     handle('lie', (data, ack) => {
       const [r,p] = requireMember(); if (r.phase !== 'lie' || r.lies.has(p.id)) throw Error('You cannot submit now.');

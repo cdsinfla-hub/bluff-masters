@@ -2,14 +2,17 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const bank = require('../questions.json');
+const catalog = require('../categories.json');
 const normalize = value => value.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 
-test('expanded bank contains 1,000 attributed additions and the original 30', () => {
-  assert.equal(bank.length, 1030);
+test('expanded bank contains 2,000 attributed additions and the original 30', () => {
+  assert.equal(bank.length, 2030);
   assert.equal(bank.slice(0,30).filter(q => !q.source).length,30);
-  assert.equal(bank.slice(30).filter(q => q.source === 'Open Trivia Database').length,1000);
+  assert.equal(bank.slice(30).filter(q => ['Open Trivia Database','OpenTriviaQA','Bluff Masters'].includes(q.source)).length,2000);
+  const ids = new Set(catalog.filter(c => c.id !== 'potluck').map(c => c.id));
   const prompts = new Set();
   for (const q of bank) {
+    assert.ok(ids.has(q.category), `Uncategorized: ${q.prompt}`);
     assert.equal(typeof q.prompt,'string');
     assert.ok(q.prompt.trim() && q.prompt.length <= 250, q.prompt);
     assert.equal(typeof q.answer,'string');
@@ -26,8 +29,11 @@ test('expanded bank contains 1,000 attributed additions and the original 30', ()
   }
 });
 
-test('expanded bank retains a varied set of topics and difficulty levels', () => {
+test('all nine topics have substantial question pools; Potluck comes last', () => {
   const added=bank.slice(30);
-  assert.ok(new Set(added.map(q => q.category)).size>=12);
+  assert.equal(catalog.length,10);
+  assert.equal(catalog.at(-1).id,'potluck');
+  assert.equal(new Set(added.map(q => q.category)).size,9);
+  for (const c of catalog.filter(c => c.id !== 'potluck')) assert.ok(bank.filter(q => q.category === c.id).length>=200, c.label);
   assert.ok(added.filter(q => ['medium','hard'].includes(q.difficulty)).length>=750);
 });

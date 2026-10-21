@@ -1,17 +1,36 @@
 # Bluff Masters
 
-An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **1,030 bundled questions** and house decoys: the original 30 plus 1,000 adapted community questions. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
+An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **2,030 bundled questions** and house decoys. All 1,030 existing questions were retained and categorized, and 1,000 more were added with priority given to the smallest topic pools. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
 
 ## Play
 
 1. One player creates a room and shares its six-character code or invite link.
-2. Join with 2–8 players using unique nicknames. The host chooses 3, 5, or 10 rounds.
+2. Join with 2–8 players using unique nicknames. The host chooses 3, 5, or 10 rounds and one or more categories, or selects **Potluck** for all topics.
 3. Everyone has 60 seconds to invent a believable fake answer to the same trivia question. Submitting the exact truth is rejected; invent a bluff instead.
 4. Vote for the truth within 60 seconds. Your own bluff is hidden. Missing submissions get no bluff; missing votes earn no truth points.
 5. Earn **1,000 points** for choosing the truth and **500 points per player fooled** by your bluff. Authors of identical bluffs each receive the full fooling points. House decoys earn nobody points.
 6. Results identify the truth, bluff authors, votes, and points. The host advances to the next round. The highest total wins; ties share victory.
 
-The host can close submissions/voting early, remove players, or reset everyone to the lobby. Removing players does not retract already locked-in actions. New players can join only in the lobby. Players reconnect automatically with a private session token held in that browser tab's session storage; seats are reserved for 90 seconds. If the host disconnects, controls pass to a connected player. Reopening a closed tab or switching devices may require joining again after a lobby reset.
+The host can close submissions/voting early, remove players, or reset everyone to the lobby. Removing players does not retract already locked-in actions. New players can join only in the lobby. Players reconnect automatically with a private session token held in that browser tab's session storage; seats are reserved for 90 seconds. If the host disconnects, controls and the room's saved category/round settings pass to a connected player. Reopening a closed tab or switching devices may require joining again after a lobby reset.
+
+## Categories
+
+In the lobby, the host can select any combination of the nine topics. **Potluck** is the last option and mixes all nine; selecting it clears individual selections, and selecting a topic clears Potluck. At least one choice is required. Everyone sees the chosen settings, and each round displays its topic. Settings are preserved when returning to the lobby and can be changed before the next game.
+
+| Topic | Questions |
+| --- | ---: |
+| Animals & Nature | 216 |
+| Science & Technology | 232 |
+| History & Mythology | 235 |
+| World & Geography | 216 |
+| Movies & TV | 230 |
+| Music | 225 |
+| Books & Arts | 228 |
+| Games & Sports | 228 |
+| Food & Everyday Life | 220 |
+| **Potluck — all topics** | **2,030** |
+
+The server draws evenly across selected topics, shuffling the topic order each cycle and the questions within each topic. A game never repeats a question. If there are fewer rounds than topics, a random subset of topics appears; the category counts in a game differ by at most one. Each question has one playable category ID; its original source category is retained as `sourceCategory` metadata. `categories.json` defines the labels and order. New questions must use one of its nine topic IDs, never `potluck`.
 
 ## Run locally
 
@@ -50,11 +69,11 @@ Rooms and scores live only in process memory. Restarts, redeploys, and idle spin
 - Server-generated room codes and reconnect tokens; maximum 8 seats per room.
 - Server-owned phases, timers, ballots, and score calculations. Correct answers/authors are withheld until reveal. Self-votes and repeated submissions/votes are rejected.
 - Player content renders as text, not HTML; bounded inputs, Socket.IO payload limit, and per-socket action throttling.
-- Integration tests use real Socket.IO clients to cover full games, capacity, host permissions, hidden ballots, self-votes, scoring, timers, duplicates, reconnects, removal, HTTP, and cleanup.
+- Integration tests use real Socket.IO clients to cover full games, capacity, host permissions, hidden ballots, self-votes, scoring, timers, duplicates, reconnects, removal, HTTP, cleanup, and synchronized category settings. Category tests cover all 511 nonempty topic combinations, balanced draws, Potluck, invalid inputs, and question-bank integrity.
 - `questions.json` is a server-side bank. Add entries with `prompt`, `answer`, and at least three distinct `decoys`; keep at least 10 questions for marathon games. It is not exposed as a static asset, but is public in this repository.
 
 ## Project layout
 
-Pre-upload verification: all integration tests passed on Node.js 22.23.4. A two-browser round was completed in Chromium with no JavaScript errors; the 390px phone layout had no horizontal overflow. The production dependency audit reported zero known vulnerabilities at verification time. GitHub Actions repeats the Node 22 integration checks on pushes and pull requests. These checks do not establish that a Render deployment is live.
+Verification includes Node.js 22.23.4 integration and category tests and two-browser Chromium checks. The 390px host layout is checked for horizontal overflow, category switching and guest synchronization. GitHub Actions repeats the Node 22 tests on pushes and pull requests. A successful local check alone does not establish that a Render deployment is live.
 
-`server.js` owns the game and HTTP service; `public/` contains the responsive HTML/CSS/JS client; `questions.json` contains the bank; `test/` contains integration and bank-validation tests; `render.yaml` configures hosting. `package-lock.json` locks dependencies. `/health` also reports `questionCount` so a deployment can be checked for the expanded bank. `QUESTION_SOURCES.md` and `LICENSE-QUESTIONS.md` document the expansion's attribution and license. No affiliation with other commercial trivia games is implied.
+`server.js` owns the game and HTTP service; `game-categories.js` validates selections and builds balanced decks; `categories.json` defines the picker; `public/` contains the responsive HTML/CSS/JS client; `questions.json` contains the bank; `test/` contains integration and bank-validation tests; `render.yaml` configures hosting. `package-lock.json` locks dependencies. `/health` reports `questionCount` and per-topic counts so a deployment can be checked without exposing answers. `QUESTION_SOURCES.md` and `LICENSE-QUESTIONS.md` document attribution and licensing. No affiliation with other commercial trivia games is implied.
