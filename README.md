@@ -1,6 +1,6 @@
 # Bluff Masters
 
-An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes 30 bundled questions and house decoys.
+An original, phone-friendly multiplayer trivia bluffing game built with Node.js, Express, and Socket.IO. No accounts, database, API keys, or external trivia service required. Includes **1,030 bundled questions** and house decoys: the original 30 plus 1,000 adapted community questions. See [question sources and licensing](QUESTION_SOURCES.md). All questions are bundled locally; no runtime trivia API calls are required.
 
 ## Play
 
@@ -57,4 +57,4 @@ Rooms and scores live only in process memory. Restarts, redeploys, and idle spin
 
 Pre-upload verification: all integration tests passed on Node.js 22.23.4. A two-browser round was completed in Chromium with no JavaScript errors; the 390px phone layout had no horizontal overflow. The production dependency audit reported zero known vulnerabilities at verification time. GitHub Actions repeats the Node 22 integration checks on pushes and pull requests. These checks do not establish that a Render deployment is live.
 
-`server.js` owns the game and HTTP service; `public/` contains the responsive HTML/CSS/JS client; `questions.json` contains the bank; `test/` contains integration tests; `render.yaml` configures hosting. `package-lock.json` locks dependencies. No affiliation with other commercial trivia games is implied.
+`server.js` owns the game and HTTP service; `public/` contains the responsive HTML/CSS/JS client; `questions.json` contains the bank; `test/` contains integration and bank-validation tests; `render.yaml` configures hosting. `package-lock.json` locks dependencies. `/health` also reports `questionCount` so a deployment can be checked for the expanded bank. `QUESTION_SOURCES.md` and `LICENSE-QUESTIONS.md` document the expansion's attribution and license. No affiliation with other commercial trivia games is implied.

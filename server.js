@@ -16,7 +16,7 @@ function createGameServer({ duration = 60000, reconnectGrace = 90000 } = {}) {
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self' ws: wss:; img-src 'self' data:; frame-ancestors 'none'");
     next();
   });
-  app.get('/health', (req, res) => res.json({ status: 'ok' }));
+  app.get('/health', (req, res) => res.json({ status: 'ok', questionCount: bank.length }));
   app.use(express.static(require('node:path').join(__dirname, 'public')));
   const server = http.createServer(app);
   const io = new Server(server, { maxHttpBufferSize: 8192 });

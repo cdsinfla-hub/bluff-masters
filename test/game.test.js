@@ -21,6 +21,7 @@ async function setup(t, options) {
 test('2-player full game: privacy, permissions, self-votes, scoring, reset, HTTP', async t => {
   const { game, url, client } = await setup(t);
   assert.equal((await (await fetch(url + '/health')).json()).status, 'ok');
+  assert.equal((await (await fetch(url + '/health')).json()).questionCount,1030);
   assert.match(await (await fetch(url)).text(), /BLUFF MASTERS/);
   const a = await client('Host'); const b = await client('Guest', a.session.code);
   assert.ok((await b.ask('start', { rounds:3 })).error);
